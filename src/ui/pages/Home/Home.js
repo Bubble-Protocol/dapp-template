@@ -4,7 +4,7 @@
 
 import React, { useState } from "react";
 import './style.css';
-import { stateManager } from "../../../state-context";
+import { stateManager } from "../../../state-manager";
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import { CheckBox } from "../../components/CheckBox/CheckBox";
 import heroImage from "../../images/hero.jpg";

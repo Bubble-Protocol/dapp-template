@@ -3,7 +3,7 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 import * as assert from './utils/assertions';
-import { stateManager } from '../state-context';
+import { stateManager } from '../state-manager';
 import { Wallet } from './Wallet';
 import { Session } from './Session';
 import { APP_ID, APP_NAME } from '../config';

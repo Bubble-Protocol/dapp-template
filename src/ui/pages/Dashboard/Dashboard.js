@@ -4,7 +4,7 @@
 
 import React, { useState } from "react";
 import './style.css';
-import { stateManager } from "../../../state-context";
+import { stateManager } from "../../../state-manager";
 
 export function Dashboard() {
 

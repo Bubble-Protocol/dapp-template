@@ -5,7 +5,7 @@
 import * as assert from './utils/assertions';
 import { ecdsa } from '@bubble-protocol/crypto';
 import { Key } from '@bubble-protocol/crypto/src/ecdsa';
-import { stateManager } from '../state-context';
+import { stateManager } from '../state-manager';
 
 /**
  * @dev Application state enum. @See the `state` property below.

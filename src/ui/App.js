@@ -4,7 +4,7 @@
 
 import React from "react";
 import './App.css';
-import { stateManager } from "../state-context";
+import { stateManager } from "../state-manager";
 import { Home } from "./pages/Home";
 import { Dashboard } from "./pages/Dashboard";
 

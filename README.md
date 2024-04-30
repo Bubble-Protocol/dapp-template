@@ -36,7 +36,7 @@ The dApp uses a Model/UI architecture with communication managed through a simpl
 
 `src/index.js` is the entry point to the application. It constructs the model and starts the UI.
 
-`src/state-context.js` holds the `stateManager`, an app-wide object that manages all interactions between the model and UI. 
+`src/state-manager.js` holds the `stateManager`, an app-wide object that manages all interactions between the model and UI. 
 The model registers all data flows and functions that can be called by the UI and dispatches data updates based on external events. 
 The UI subscribes to these data flows and functions.
 
