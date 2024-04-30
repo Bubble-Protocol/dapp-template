@@ -36,9 +36,9 @@ export function Dashboard() {
         </p>
         <table>
           <tr><td><b>Chain</b></td><td>{sessionData.chainId}</td></tr>
-          <tr><td><b>Wallet Account</b></td><td>{sessionData.account}</td></tr>
-          <tr><td><b>Login Address</b></td><td>{sessionData.login.address}</td></tr>
-          <tr><td><b>Login Public Key</b></td><td>{sessionData.login.publicKey}</td></tr>
+          <tr><td><b>Wallet Account</b></td><td className="break">{sessionData.account}</td></tr>
+          <tr><td><b>Login Address</b></td><td className="break">{sessionData.login.address}</td></tr>
+          <tr><td><b>Login Public Key</b></td><td className="break">{sessionData.login.publicKey}</td></tr>
         </table>
       </div>
 

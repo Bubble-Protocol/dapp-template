@@ -4,6 +4,7 @@
   flex-direction: column;
   align-items: center;
   gap: 64px;
+  max-width: 100%;
 }
 
 .dashboard .title-section {
@@ -28,9 +29,17 @@
 }
 
 .dashboard table {
+  display: block;
+  table-layout: fixed;
   text-align: left;
+  overflow: hidden;
 }
 
 .dashboard td {
-  padding: 0 8px;
+  padding: 4px 8px;
+  vertical-align: top;
+}
+
+.dashboard td.break {
+  word-break: break-all;
 }
