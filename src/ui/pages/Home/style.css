@@ -182,14 +182,6 @@
 
 /* Animations */
 
-.animate {
-  animation-fill-mode: forwards;
-}
-
-.animation-active {
-  opacity: 1;
-}
-
 @keyframes slideInFromLeft {
   0% {
     transform: translateX(-10%);
