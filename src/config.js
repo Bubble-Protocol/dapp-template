@@ -25,7 +25,7 @@ export const DEBUG_ON = true;
  * 
  * Example: "my_amazing_app"
  */
-export const APP_ID = "dapp-template";
+export const APP_ID = "";
 
 /**
  * @dev The user-facing name of your application. 
@@ -35,7 +35,7 @@ export const APP_ID = "dapp-template";
  * 
  * Example: "My Amazing App"
  */
-export const APP_NAME = "DApp Template";
+export const APP_NAME = "";
 
 /**
  * @dev Set the list of blockchains your dapp supports. Import each from `wagmi/chains`.
