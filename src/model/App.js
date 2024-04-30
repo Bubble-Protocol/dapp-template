@@ -82,7 +82,10 @@ export class Model {
    */
   async login(...args) {
     if (!this.session) return Promise.reject('Connect wallet before logging in');
-    return this.session.login(...args);
+    return this.session.login(...args)
+    .then(() => {
+      stateManager.dispatch('session-data', this.session.getSessionData());
+    })
   }
 
   /**

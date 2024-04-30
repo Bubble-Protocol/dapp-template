@@ -91,7 +91,11 @@ export class Session {
   getSessionData() {
     return {
       account: this.account,
-      chainId: this.chainId
+      chainId: this.chainId,
+      login: {
+        address: this.loginKey ? this.loginKey.address : undefined,
+        publicKey: this.loginKey ? '0x'+this.loginKey.cPublicKey : undefined
+      }
     }
   }
 

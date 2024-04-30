@@ -35,8 +35,10 @@ export function Dashboard() {
           Welcome to your dashboard.
         </p>
         <table>
-          <tr><td><b>Account</b></td><td>{sessionData.account}</td></tr>
           <tr><td><b>Chain</b></td><td>{sessionData.chainId}</td></tr>
+          <tr><td><b>Wallet Account</b></td><td>{sessionData.account}</td></tr>
+          <tr><td><b>Login Address</b></td><td>{sessionData.login.address}</td></tr>
+          <tr><td><b>Login Public Key</b></td><td>{sessionData.login.publicKey}</td></tr>
         </table>
       </div>
 
