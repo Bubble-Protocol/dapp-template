@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom/client';
 import { RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 import { WagmiConfig } from 'wagmi';
 import UI from './ui/App.js';
-import { rainbowKitConfig } from './rainbow-kit.js';
+import { rainbowKitConfig } from './ui/rainbow-kit.js';
 import { Model } from './model/App.js';
 import './index.css';
 import { DEBUG_ON, TRACE_ON } from './config.js';

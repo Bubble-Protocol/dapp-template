@@ -6,7 +6,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { APP_NAME, SUPPORTED_BLOCKCHAINS } from './config';
+import { APP_NAME, SUPPORTED_BLOCKCHAINS } from '../config';
 
 
 /**
