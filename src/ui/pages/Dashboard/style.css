@@ -1,0 +1,36 @@
+.dashboard {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+}
+
+.dashboard .title-section {
+  text-align: center;
+}
+
+.dashboard .page-title {
+  color: #000;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 48px;
+  text-align: center;
+}
+
+.dashboard .page-summary {
+  color: #686666;
+  font-size: 18px;
+  max-width: 800px;
+  align-self: center;
+  text-align: center;
+}
+
+.dashboard table {
+  text-align: left;
+}
+
+.dashboard td {
+  padding: 0 8px;
+}
