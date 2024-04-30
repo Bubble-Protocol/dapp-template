@@ -52,7 +52,7 @@
 }
 
 .hero-section .title .highlight {
-  color: #dd1010;
+  color: var(--cta-color);
 }
 
 .hero-section .subtitle {

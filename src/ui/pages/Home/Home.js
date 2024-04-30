@@ -44,7 +44,7 @@ export function Home() {
         <div className="hero-section">
             <div className="titles">
                 <span className="title">
-                  My App
+                  My <span className="highlight">Amazing</span> App
                 </span>
                 <span className="subtitle">
                   Welcome to my amazing app
