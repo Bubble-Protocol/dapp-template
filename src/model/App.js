@@ -66,7 +66,7 @@ export class Model {
     stateManager.register('state', this.state);
     stateManager.register('error');
     stateManager.register('session-state', 'closed');
-    stateManager.register('session-data', {});
+    stateManager.register('session', {});
 
     // Register UI functions
     stateManager.register('wallet-functions', {
@@ -84,7 +84,7 @@ export class Model {
     if (!this.session) return Promise.reject('Connect wallet before logging in');
     return this.session.login(...args)
     .then(() => {
-      stateManager.dispatch('session-data', this.session.getSessionData());
+      stateManager.dispatch('session', this.session.getSessionData());
     })
   }
 
@@ -124,7 +124,7 @@ export class Model {
     this._setState(STATES.initialising);
     return this.session.initialise()
       .then(sessionData => {
-        stateManager.dispatch('session-data', sessionData);
+        stateManager.dispatch('session', sessionData);
         this._setState(STATES.initialised);
       })
       .catch(error => {
@@ -141,8 +141,8 @@ export class Model {
     if (this.session) {
       stateManager.dispatch('error');
       this.session = undefined;
-      stateManager.dispatch('session-data', {});
       stateManager.dispatch('session-state', 'closed');
+      stateManager.dispatch('session', {});
     }
   }
 
