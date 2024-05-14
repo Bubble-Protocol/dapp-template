@@ -99,6 +99,6 @@ export function Home() {
 
 
 function formatError(error) {
-  return error.message || error;
+  return error.details || error.message || error;
 }
 

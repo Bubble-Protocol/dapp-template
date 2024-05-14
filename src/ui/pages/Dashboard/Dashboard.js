@@ -35,10 +35,12 @@ export function Dashboard() {
           Welcome to your dashboard.
         </p>
         <table>
-          <tr><td><b>Chain</b></td><td>{session.chainId}</td></tr>
-          <tr><td><b>Wallet Account</b></td><td className="break">{session.account}</td></tr>
-          <tr><td><b>Login Address</b></td><td className="break">{session.login.address}</td></tr>
-          <tr><td><b>Login Public Key</b></td><td className="break">{session.login.publicKey}</td></tr>
+          <tbody>
+            <tr><td><b>Chain</b></td><td>{session.chainId}</td></tr>
+            <tr><td><b>Wallet Account</b></td><td className="break">{session.account}</td></tr>
+            <tr><td><b>Login Address</b></td><td className="break">{session.login.address}</td></tr>
+            <tr><td><b>Login Public Key</b></td><td className="break">{session.login.publicKey}</td></tr>
+          </tbody>
         </table>
       </div>
 
@@ -56,5 +58,5 @@ export function Dashboard() {
 
 
 function formatError(error) {
-  return error.message || error;
+  return error.details || error.message || error;
 }
