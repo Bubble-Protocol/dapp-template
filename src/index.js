@@ -13,19 +13,19 @@ import './index.css';
 import { DEBUG_ON, TRACE_ON } from './config.js';
 
 /**
- * @dev Add trace and debug commands to the console. Use `console.stackTrace` to dump the stack.
+ * Add trace and debug commands to the console. Use `console.stackTrace` to dump the stack.
  */
 console.stackTrace = console.trace;
 console.trace = TRACE_ON ? Function.prototype.bind.call(console.info, console, "[trace]") : function() {};
 console.debug = DEBUG_ON ? Function.prototype.bind.call(console.info, console, "[debug]") : function() {};
 
 /**
- * @dev Construct the model
+ * Construct the model
  */
 new Model();
 
 /**
- * @dev Render the UI
+ * Render the UI
  */
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -8,7 +8,7 @@ import { Key } from '@bubble-protocol/crypto/src/ecdsa';
 import { stateManager } from '../state-manager';
 
 /**
- * @dev Application state enum. @See the `state` property below.
+ * Application state enum. @See the `state` property below.
  */
 const STATES = {
   open: 'open',
@@ -28,37 +28,37 @@ const STATES = {
 export class Session {
 
   /**
-   * @dev Session current state
+   * Session current state
    */
   state = STATES.open;
 
   /**
-   * @dev The session's unique id derived from appId, chainId and account
+   * The session's unique id derived from appId, chainId and account
    */
   id;
 
   /**
-   * @dev The wallet object
+   * The wallet object
    */
   wallet;
 
   /**
-   * @dev The externally owned account address selected by the user's wallet
+   * The externally owned account address selected by the user's wallet
    */
   account;
 
   /**
-   * @dev The chain id selected by the user's wallet
+   * The chain id selected by the user's wallet
    */
   chainId;
 
   /**
-   * @dev The session private key, optionally held in local storage and read on construction.
+   * The session private key, optionally held in local storage and read on construction.
    */
   loginKey;
 
   /**
-   * @dev Constructs this Session from the locally saved state.
+   * Constructs this Session from the locally saved state.
    */
   constructor(appId, wallet) {
     console.trace('Constructing session');
@@ -75,7 +75,7 @@ export class Session {
   }
 
   /**
-   * @dev Initialises the Session. The state of construction is determined by the properties read  
+   * Initialises the Session. The state of construction is determined by the properties read  
    * from the local saved state during construction.
    */
   async initialise() {
@@ -86,7 +86,7 @@ export class Session {
   }
 
   /**
-   * @dev Returns an object containing the public data for this session
+   * Returns an object containing the public data for this session
    */
   getSessionData() {
     return {
@@ -100,7 +100,7 @@ export class Session {
   }
 
   /**
-   * @dev Logs in by requesting a login message signature from the user's wallet.
+   * Logs in by requesting a login message signature from the user's wallet.
    * If `rememberMe` is set, the login will be saved indefinitely, or until `logout` is called.
    */
   async login(rememberMe = false) {
@@ -114,7 +114,7 @@ export class Session {
   }
 
   /**
-   * @dev Logs out of the session, deleting any saved login details
+   * Logs out of the session, deleting any saved login details
    */
   logout() {
     this.loginKey = undefined;
@@ -123,7 +123,7 @@ export class Session {
   }
 
   /**
-   * @dev Loads the Session state from localStorage
+   * Loads the Session state from localStorage
    */
   _loadState() {
     const stateJSON = window.localStorage.getItem(this.id);
@@ -138,7 +138,7 @@ export class Session {
   }
 
   /**
-   * @dev Saves the Session state to localStorage
+   * Saves the Session state to localStorage
    */
   _saveState() {
     console.trace('saving session state');
@@ -151,7 +151,7 @@ export class Session {
   }
 
   /**
-   * @dev Determines the value of this.state
+   * Determines the value of this.state
    */
   _calculateState() {
     const oldState = this.state;

@@ -6,7 +6,7 @@ import { StateManager } from "./model/utils/StateManager";
 
 
 /**
- * @dev The global state manager used to dispatch events from the model to the UI.
+ * The global state manager used to dispatch events from the model to the UI.
  */
 
 export const stateManager = new StateManager();

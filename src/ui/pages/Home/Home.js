@@ -10,7 +10,7 @@ import { CheckBox } from "../../components/CheckBox/CheckBox";
 import heroImage from "../../images/hero.jpg";
 
 /**
- * @dev The community join screen
+ * The community join screen
  */
 
 export function Home() {

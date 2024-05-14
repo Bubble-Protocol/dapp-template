@@ -10,7 +10,7 @@ import { Dashboard } from "./pages/Dashboard";
 
 
 /**
- * @dev The main application screen
+ * The main application screen
  */
 
 function App() {

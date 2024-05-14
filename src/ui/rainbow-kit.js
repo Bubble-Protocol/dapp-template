@@ -10,7 +10,7 @@ import { APP_NAME, SUPPORTED_BLOCKCHAINS } from '../config';
 
 
 /**
- * @dev Configuration of the RainbowKit wallet
+ * Configuration of the RainbowKit wallet
  */
 
 const { chains, publicClient } = configureChains(

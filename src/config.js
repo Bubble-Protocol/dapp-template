@@ -8,7 +8,7 @@
 
 
 /**
- * @dev Imported chains. See `SUPPORTED_BLOCKCHAINS` below.
+ * Imported chains. See `SUPPORTED_BLOCKCHAINS` below.
  */
 import { polygon } from 'wagmi/chains';
 
@@ -19,7 +19,7 @@ export const TRACE_ON = true;
 export const DEBUG_ON = true;
 
 /**
- * @dev The unique id of your application. 
+ * The unique id of your application. 
  * 
  * Is used by the Session class to label any data saved to local storage. Must be unique for each application hosted on the same domain.
  * 
@@ -28,7 +28,7 @@ export const DEBUG_ON = true;
 export const APP_ID = "";
 
 /**
- * @dev The user-facing name of your application. 
+ * The user-facing name of your application. 
  * 
  * Is used in the login message to be signed by the user when they first log in.
  * Is also used by RainbowKit (see `rainbow-kit.js`).
@@ -38,7 +38,7 @@ export const APP_ID = "";
 export const APP_NAME = "";
 
 /**
- * @dev Set the list of blockchains your dapp supports. Import each from `wagmi/chains`.
+ * Set the list of blockchains your dapp supports. Import each from `wagmi/chains`.
  * 
  * Used by RainbowKit (see `rainbow-kit.js`).
  */

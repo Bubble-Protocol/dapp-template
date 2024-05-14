@@ -10,7 +10,7 @@ import { APP_ID, APP_NAME } from '../config';
 import { AppError } from './utils/errors';
 
 /**
- * @dev Application state enum. @See the `state` property below.
+ * Application state enum. @See the `state` property below.
  */
 const STATES = {
   closed: 'closed',
@@ -28,7 +28,7 @@ const STATES = {
 export class Model {
 
   /**
-   * @dev Combined initialisation state of the application and session made available to the UI.
+   * Combined initialisation state of the application and session made available to the UI.
    * 
    *   - closed => wallet not connected
    *   - initialising => session is being initialised
@@ -38,18 +38,18 @@ export class Model {
   state = STATES.closed;
 
   /**
-   * @dev The current 'logged in' session. When the user connects their wallet or switches
+   * The current 'logged in' session. When the user connects their wallet or switches
    * wallet account a new session is constructed. (@see _accountChanged).
    */
   session;
 
   /**
-   * @dev The wallet handler that listens to the user's wallet state (via wagmi).
+   * The wallet handler that listens to the user's wallet state (via wagmi).
    */
   wallet;
 
   /**
-   * @dev Constructs the wallet handler and sets up the initial UI state.
+   * Constructs the wallet handler and sets up the initial UI state.
    */
   constructor() {
     console.trace('Constructing the model');
@@ -78,7 +78,7 @@ export class Model {
   }
 
   /**
-   * @dev Logs in to the connected session. Rejects if wallet is not connected.
+   * Logs in to the connected session. Rejects if wallet is not connected.
    */
   async login(...args) {
     if (!this.session) return Promise.reject('Connect wallet before logging in');
@@ -89,7 +89,7 @@ export class Model {
   }
 
   /**
-   * @dev Logs out of the connected session. Rejects if wallet is not connected.
+   * Logs out of the connected session. Rejects if wallet is not connected.
    */
   async logout() {
     if (!this.session) return Promise.reject('Connect wallet before logging out');
@@ -97,7 +97,7 @@ export class Model {
   }
 
   /**
-   * @dev Called by the wallet whenever the user switches accounts or disconnects their wallet.
+   * Called by the wallet whenever the user switches accounts or disconnects their wallet.
    * Closes any existing session first, clearing the UI state.
    */
   _accountChanged(account) {
@@ -109,7 +109,7 @@ export class Model {
   }
 
   /**
-   * @dev Starts a new session on first connect or whenever the wallet account is changed. 
+   * Starts a new session on first connect or whenever the wallet account is changed. 
    */
   _openSession() {
     this.session = new Session(APP_ID, this.wallet);
@@ -117,7 +117,7 @@ export class Model {
   }
 
   /**
-   * @dev Initialises the Session. Keeps the UI up-to-date on the state of the app as the 
+   * Initialises the Session. Keeps the UI up-to-date on the state of the app as the 
    * Session is initialised.
    */
   async _initialiseSession() {
@@ -135,7 +135,7 @@ export class Model {
   }
 
   /**
-   * @dev Closes any existing session and clears the UI state
+   * Closes any existing session and clears the UI state
    */
   _closeSession() {
     if (this.session) {
@@ -147,7 +147,7 @@ export class Model {
   }
 
   /**
-   * @dev Sets the app state and informs the UI
+   * Sets the app state and informs the UI
    */
   _setState(state) {
     this.state = state;
