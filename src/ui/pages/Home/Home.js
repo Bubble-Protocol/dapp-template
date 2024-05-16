@@ -4,7 +4,7 @@
 
 import React, { useState } from "react";
 import './style.css';
-import { stateManager } from "../../../state-manager";
+import { useModelStateData } from "../../../state-manager";
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import { CheckBox } from "../../components/CheckBox/CheckBox";
 import heroImage from "../../images/hero.jpg";
@@ -19,10 +19,10 @@ export function Home() {
   const { openConnectModal } = useConnectModal();
 
   // Model state data
-  const appState = stateManager.useStateData('state')();
-  const sessionState = stateManager.useStateData('session-state')();
-  const appError = stateManager.useStateData('error')();
-  const { login } = stateManager.useStateData('wallet-functions')();
+  const appState = useModelStateData('state');
+  const sessionState = useModelStateData('session-state');
+  const appError = useModelStateData('error');
+  const { login } = useModelStateData('wallet-functions');
 
   // Local state data
   const [rememberMe, setRememberMe] = useState(false);

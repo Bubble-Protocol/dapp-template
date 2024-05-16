@@ -2,7 +2,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import { useEffect, useState } from "react";
 import { EventManager } from "./EventManager";
 
 /**
@@ -24,18 +23,22 @@ export class StateManager {
     this.listeners.notifyListeners(name, newValue);
   }
 
-  useStateData(name) {
+  getState(name) {
     if (!this.listeners.hasEvent(name)) throw new Error('non-existent state data: '+name);
-    const listeners = this.listeners;
-    const initialValue = this.state[name];
-    return () => {
-      const [data, updateData] = useState(initialValue);
-      useEffect(() => {
-        listeners.on(name, updateData);
-        return () => listeners.off(name, updateData);
-      }, [])
-      return data;
-    }
+    return this.state[name]
+  }
+
+  hasState(name) {
+    return this.listeners.hasEvent(name);
+  }
+
+  subscribe(name, callback) {
+    this.listeners.on(name, callback);
+  }
+
+  unsubscribe(name, callback) {
+    this.listeners.off(name, callback);
   }
 
 }
+

@@ -4,7 +4,7 @@
 
 import React from "react";
 import './App.css';
-import { stateManager } from "../state-manager";
+import { useModelStateData } from "../state-manager";
 import { Home } from "./pages/Home";
 import { Dashboard } from "./pages/Dashboard";
 
@@ -15,8 +15,8 @@ import { Dashboard } from "./pages/Dashboard";
 
 function App() {
 
-  const appState = stateManager.useStateData('state')();
-  const sessionState = stateManager.useStateData('session-state')();
+  const appState = useModelStateData('state');
+  const sessionState = useModelStateData('session-state');
 
   const loggedIn = appState === 'initialised' && sessionState === 'logged-in';
 

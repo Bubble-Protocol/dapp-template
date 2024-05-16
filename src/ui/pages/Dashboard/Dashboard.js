@@ -4,13 +4,13 @@
 
 import React, { useState } from "react";
 import './style.css';
-import { stateManager } from "../../../state-manager";
+import { useModelStateData } from "../../../state-manager";
 
 export function Dashboard() {
 
   // Model state data
-  const session = stateManager.useStateData('session')();
-  const { logout } = stateManager.useStateData('wallet-functions')();
+  const session = useModelStateData('session');
+  const { logout } = useModelStateData('wallet-functions');
 
   // Local state data
   const [localError, setLocalError] = useState(false);
