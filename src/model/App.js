@@ -97,6 +97,13 @@ export class Model {
   }
 
   /**
+   * Shuts down the app.
+   */
+  async close() {
+    this._closeSession();
+  }
+
+  /**
    * Called by the wallet whenever the user switches accounts or disconnects their wallet.
    * Closes any existing session first, clearing the UI state.
    */
@@ -140,6 +147,7 @@ export class Model {
   _closeSession() {
     if (this.session) {
       stateManager.dispatch('error');
+      this.session.close();
       this.session = undefined;
       stateManager.dispatch('session-state', 'closed');
       stateManager.dispatch('session', {});

@@ -26,6 +26,13 @@ export class Session extends LoginSession {
   }
   
   /**
+   * Closes the session
+   */
+  async close() {
+    // TODO: Add any app-specific session close tasks here
+  }
+  
+  /**
    * Called after a successful login.
    */ 
   async _onLogin() {

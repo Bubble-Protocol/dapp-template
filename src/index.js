@@ -22,7 +22,12 @@ console.debug = DEBUG_ON ? Function.prototype.bind.call(console.info, console, "
 /**
  * Construct the model
  */
-new Model();
+const model = new Model();
+
+window.addEventListener('beforeunload', () => {
+  model.close();
+});
+
 
 /**
  * Render the UI
