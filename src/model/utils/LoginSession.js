@@ -59,14 +59,14 @@ export class LoginSession {
    * and account address. The session state is saved to localStorage with this ID as the key.
    * 
    * @param {string} appId A unique application-specific ID used to prefix the session data saved to localStorage
-   * @param {Wallet} wallet - Wallet for contract interactions. Requires `account` field and `login` and `getChain` functions.
+   * @param {Wallet} wallet - Wallet for contract interactions. Requires `account` field and `login` and `getChainId` functions.
    */
   constructor(appId, wallet) {
     assert.isNotEmpty(appId, 'appId');
     assert.isObject(wallet, 'wallet');
     this.wallet = wallet;
     this.account = wallet.account;
-    this.chainId = wallet.getChain();
+    this.chainId = wallet.getChainId();
     assert.isNotEmpty(this.chainId, 'wallet chain id');
     assert.isNotEmpty(this.account, 'wallet account');
     this.id = appId+'-'+this.chainId+'-'+this.account.slice(2).toLowerCase();

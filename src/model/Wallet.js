@@ -2,12 +2,15 @@ import { getAccount, getNetwork, watchAccount, getWalletClient, getPublicClient,
 import { EventManager } from './utils/EventManager';
 import * as assert from './utils/assertions';
 import { AppError } from './utils/errors';
-import { ContractFunctionExecutionError } from 'viem';
+import { ContractFunctionExecutionError, TransactionReceiptNotFoundError, encodeDeployData } from 'viem';
 
 const WALLET_STATE = {
   disconnected: 'disconnected',
   connected: 'connected'
 }
+
+const DEFAULT_TX_TIMEOUT = 30000;
+const DEFAULT_POLLING_INTERVAL = 1000;
 
 export class Wallet {
 
@@ -49,69 +52,64 @@ export class Wallet {
     else return undefined;
   }
   
-  getChain() {
+  getChainId() {
     const { chain } = getNetwork();
     if (chain) return chain.id;
     else return undefined;
   }
 
-  async deploy(sourceCode, params=[], options={}) {
+  async deploy(abi, bytecode, params=[], options={}) {
     if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
-    const chainId = this.getChain();
+    const chainId = this.getChainId();
     const walletClient = await getWalletClient({chainId});
-    const publicClient = getPublicClient({chainId});
+
+    const deployBytecode = encodeDeployData({
+      abi,
+      bytecode,
+      args: params
+    });
+
+    const gas = await this.estimateGas(deployBytecode, options);
 
     const txHash = await walletClient.deployContract({
       account: this.account,
-      abi: sourceCode.abi,
-      bytecode: sourceCode.bytecode || sourceCode.bin,
+      abi,
+      bytecode,
       args: params,
+      gas: (gas * 120n) / 100n,
       ...options
     });
 
-    console.trace('txHash', txHash);
-
-    const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
-
-    console.trace('receipt', receipt);
-
+    const receipt = await this._waitForConfirmation(txHash, options);
     return receipt.contractAddress;
   }
 
   async send(contractAddress, abi, method, params=[], options={}) { 
     if (this.state != WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
-    const chainId = this.getChain();
+    const chainId = this.getChainId();
     const walletClient = await getWalletClient({chainId});
-    const publicClient = getPublicClient({chainId});
+
+    const gas = await this.estimateContractGas(contractAddress, abi, method, params, options);
 
     const txHash = await walletClient.writeContract({
       address: contractAddress,
       abi: abi,
       functionName: method,
       args: params,
+      gas: (gas * 120n) / 100n,
       ...options
     })
 
-    console.trace('txHash', txHash);
+    return await this._waitForConfirmation(txHash, options);
 
-    const receipt = 
-      await publicClient.waitForTransactionReceipt({ hash: txHash, retryCount: 30 })
-      .catch(error => {
-        console.warn(error);
-        throw new AppError('Timed out waiting for transaction. The network could just be busy and your transaction may still go through. Check your wallet for more information.', {code: 'timeout', cause: error});
-      });
-
-    console.trace('receipt', receipt);
-
-    return receipt;
   }
 
   async call(contractAddress, abi, method, params=[]) {
     if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
-    const chainId = this.getChain();
+    const chainId = this.getChainId();
     const publicClient = getPublicClient({chainId});
 
     return publicClient.readContract({
@@ -123,10 +121,24 @@ export class Wallet {
     .catch(parseRevertError);
   }
 
-  async estimateGas(contractAddress, abi, method, params=[]) {
+  async estimateGas(data, options={}) {
     if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
-    const chainId = this.getChain();
+    const chainId = this.getChainId();
+    const publicClient = getPublicClient({chainId});
+
+    return publicClient.estimateGas({
+      account: this.getAccount(),
+      data,
+      ...options
+    })
+    .catch(parseRevertError);
+  }
+
+  async estimateContractGas(contractAddress, abi, method, params=[], options={}) {
+    if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
+
+    const chainId = this.getChainId();
     const publicClient = getPublicClient({chainId});
 
     return publicClient.estimateContractGas({
@@ -134,14 +146,10 @@ export class Wallet {
       address: contractAddress,
       abi: abi,
       functionName: method,
-      args: params
+      args: params,
+      ...options
     })
     .catch(parseRevertError);
-  }
-
-  async estimateAndSend(contractAddress, abi, method, params=[]) {
-    return this.estimateGas(contractAddress, abi, method, params)
-    .then(() => this.send(contractAddress, abi, method, params));
   }
 
   async switchChain(chainId, chainName) {
@@ -179,6 +187,36 @@ export class Wallet {
       this.state = WALLET_STATE.disconnected;
     }
     this.listeners.notifyListeners('account-changed', this.account);
+  }
+
+  async _waitForConfirmation(hash, options={}) {
+    
+    const startTime = Date.now();
+    const timeout = options.timeout || DEFAULT_TX_TIMEOUT;
+    const pollingInterval = options.pollingInterval || DEFAULT_POLLING_INTERVAL;
+
+    console.trace('txHash:', hash);
+    console.trace('waiting up to', timeout+'ms', 'for confirmation, polling every', pollingInterval+'ms');
+
+    const chainId = this.getChainId();
+    const publicClient = getPublicClient({chainId});
+
+    while (Date.now() - startTime < timeout) {
+      try {
+        const receipt = await publicClient.getTransactionReceipt({hash});
+        if (receipt) {
+          console.trace('receipt:', receipt);
+          return receipt;
+        }
+      }
+      catch (error) {
+        if (!(error instanceof TransactionReceiptNotFoundError)) {
+          console.warn('error getting receipt, trying again in', pollingInterval+'ms', error);
+        }
+      }
+      await new Promise(resolve => setTimeout(resolve, pollingInterval));
+    }
+    throw new AppError('Timed out waiting for transaction. The network could just be busy and your transaction may still go through. Check your wallet for more information.', {code: 'timeout'});
   }
 
 }
