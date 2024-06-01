@@ -4,8 +4,8 @@
   "homepage": "",
   "private": true,
   "dependencies": {
-    "@bubble-protocol/client": "^0.1.2",
-    "@bubble-protocol/crypto": "^0.0.6",
+    "@bubble-protocol/client": "^0.2.1",
+    "@bubble-protocol/crypto": "^0.0.x",
     "@rainbow-me/rainbowkit": "^1.3.4",
     "@wagmi/core": "^1.4.12",
     "react": "^18.2.0",
