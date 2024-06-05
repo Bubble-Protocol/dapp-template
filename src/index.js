@@ -4,10 +4,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
-import { WagmiConfig } from 'wagmi';
+import { ConnectButton, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
+import { QueryClientProvider, QueryClient} from "@tanstack/react-query";
+import { WagmiProvider } from 'wagmi';
 import UI from './ui/App.js';
-import { rainbowKitConfig } from './ui/rainbow-kit.js';
+import { wagmiConfig } from './ui/rainbow-kit.js';
 import { Model } from './model/App.js';
 import './index.css';
 import { DEBUG_ON, TRACE_ON } from './config.js';
@@ -22,12 +23,13 @@ console.debug = DEBUG_ON ? Function.prototype.bind.call(console.info, console, "
 /**
  * Construct the model
  */
-const model = new Model();
+const model = new Model(wagmiConfig);
 
 window.addEventListener('beforeunload', () => {
   model.close();
 });
 
+const queryClient = new QueryClient();
 
 /**
  * Render the UI
@@ -35,14 +37,16 @@ window.addEventListener('beforeunload', () => {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <WagmiConfig config={rainbowKitConfig.wagmiConfig}>
-      <RainbowKitProvider chains={rainbowKitConfig.chains} theme={lightTheme({borderRadius: 'small'})} >
-        <div id="body">
-          <div id="page">
-            <UI />
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider theme={lightTheme({borderRadius: 'small'})} >
+          <div id="body">
+            <div id="page">
+              <UI />
+            </div>
           </div>
-        </div>
-      </RainbowKitProvider>
-    </WagmiConfig>
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </React.StrictMode>
 );

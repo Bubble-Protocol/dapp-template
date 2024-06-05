@@ -3,36 +3,43 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultWallets } from '@rainbow-me/rainbowkit';
-import { configureChains, createConfig } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import { createConfig } from 'wagmi';
 import { APP_NAME, SUPPORTED_BLOCKCHAINS } from '../config';
+
+import {
+  metaMaskWallet,
+  walletConnectWallet,
+  coinbaseWallet,
+  rainbowWallet
+} from '@rainbow-me/rainbowkit/wallets';
 
 
 /**
  * Configuration of the RainbowKit wallet
  */
 
-const { chains, publicClient } = configureChains(
-  SUPPORTED_BLOCKCHAINS,
+const wallets = [
+  metaMaskWallet,
+  coinbaseWallet,
+  rainbowWallet,
+  walletConnectWallet
+];
+
+const connectors = connectorsForWallets(
   [
-    publicProvider()
-  ]
+    {
+      groupName: 'Recommended',
+      wallets
+    }
+  ],
+  {
+    appName: APP_NAME,
+    projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID
+  }
 );
 
-const { connectors } = getDefaultWallets({
-  appName: APP_NAME,
-  projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID,
-  chains
-});
-
-const wagmiConfig = createConfig({
-  autoConnect: true,
+export const wagmiConfig = createConfig({
   connectors,
-  publicClient
+  chains: SUPPORTED_BLOCKCHAINS
 });
-
-export const rainbowKitConfig = {
-  wagmiConfig,
-  chains
-};

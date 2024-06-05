@@ -1,4 +1,4 @@
-import { getAccount, getNetwork, watchAccount, getWalletClient, getPublicClient, disconnect, switchNetwork, signMessage } from 'wagmi/actions';
+import { getAccount, watchAccount, getWalletClient, getPublicClient, disconnect, switchNetwork, signMessage } from 'wagmi/actions';
 import { EventManager } from './utils/EventManager';
 import * as assert from './utils/assertions';
 import { AppError } from './utils/errors';
@@ -16,24 +16,26 @@ export class Wallet {
 
   state = WALLET_STATE.disconnected;
   appName;
+  config;
   account;
   closeWatchers = [];
   listeners = new EventManager(['connected', 'disconnected', 'account-changed']);
 
-  constructor(appName) {
+  constructor(appName, config) {
     this.appName = appName;
-    this.closeWatchers.push(watchAccount(this._handleAccountsChanged.bind(this)));
+    this.config = config;
+    this.closeWatchers.push(watchAccount(config, {onChange: this._handleAccountsChanged.bind(this)}));
     this.on = this.listeners.on.bind(this.listeners);
     this.off = this.listeners.off.bind(this.listeners);
   }
 
   async isAvailable() {
-    const acc = getAccount();
+    const acc = getAccount(this.config);
     return Promise.resolve(!!acc);
   }
   
   async isConnected() {
-    const acc = getAccount();
+    const acc = getAccount(this.config);
     return Promise.resolve(assert.isObject(acc) ? acc.isConnected : false);
   }
 
@@ -41,28 +43,27 @@ export class Wallet {
     return Promise.resolve();
   }
 
-  async disconnect() {
-    disconnect();
+  async disconnect(config) {
+    disconnect(this.config);
     return Promise.resolve();
   }
 
-  getAccount() {
-    const acc = getAccount();
+  getAccount(config) {
+    const acc = getAccount(this.config);
     if (acc) return acc.address;
     else return undefined;
   }
   
   getChainId() {
-    const { chain } = getNetwork();
-    if (chain) return chain.id;
-    else return undefined;
+    const { chainId } = getAccount(this.config);
+    return chainId;
   }
 
   async deploy(abi, bytecode, params=[], options={}) {
     if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
     const chainId = this.getChainId();
-    const walletClient = await getWalletClient({chainId});
+    const walletClient = await getWalletClient(this.config, {chainId});
 
     const deployBytecode = encodeDeployData({
       abi,
@@ -89,7 +90,7 @@ export class Wallet {
     if (this.state != WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
     const chainId = this.getChainId();
-    const walletClient = await getWalletClient({chainId});
+    const walletClient = await getWalletClient(this.config, {chainId});
 
     const gas = await this.estimateContractGas(contractAddress, abi, method, params, options);
 
@@ -110,7 +111,7 @@ export class Wallet {
     if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
     const chainId = this.getChainId();
-    const publicClient = getPublicClient({chainId});
+    const publicClient = getPublicClient(this.config, {chainId});
 
     return publicClient.readContract({
       address: contractAddress,
@@ -125,10 +126,10 @@ export class Wallet {
     if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
     const chainId = this.getChainId();
-    const publicClient = getPublicClient({chainId});
+    const publicClient = getPublicClient(this.config, {chainId});
 
     return publicClient.estimateGas({
-      account: this.getAccount(),
+      account: this.getAccount(this.config),
       data,
       ...options
     })
@@ -139,10 +140,10 @@ export class Wallet {
     if (this.state !== WALLET_STATE.connected) throw {code: 'wallet-unavailable', message: 'wallet is not available'};
 
     const chainId = this.getChainId();
-    const publicClient = getPublicClient({chainId});
+    const publicClient = getPublicClient(this.config, {chainId});
 
     return publicClient.estimateContractGas({
-      account: this.getAccount(),
+      account: this.getAccount(this.config),
       address: contractAddress,
       abi: abi,
       functionName: method,
@@ -155,7 +156,7 @@ export class Wallet {
   async switchChain(chainId, chainName) {
     if (assert.isString(chainId)) chainId = parseInt(chainId);
     try {
-      const chain = await switchNetwork({chainId});
+      const chain = await switchNetwork(this.config, {chainId});
     } catch (error) {
       if (error.code === 4902) {
         throw {code: 'chain-missing', message: 'Add the chain to Metamask and try again', chain: {id: parseInt(chainId), name: chainName}};
@@ -170,10 +171,11 @@ export class Wallet {
       account: account || this.account,
       message: "Login to "+this.appName
     };
-    return signMessage(params);
+    return signMessage(this.config, params);
   }
 
   _handleAccountsChanged(acc) {
+    console.debug('account changed:', acc )
     if (acc && acc.address) {
       this.account = acc.address;
       this.connector = acc.connector;
@@ -199,7 +201,7 @@ export class Wallet {
     console.trace('waiting up to', timeout+'ms', 'for confirmation, polling every', pollingInterval+'ms');
 
     const chainId = this.getChainId();
-    const publicClient = getPublicClient({chainId});
+    const publicClient = getPublicClient(this.config, {chainId});
 
     while (Date.now() - startTime < timeout) {
       try {

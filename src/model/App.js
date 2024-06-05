@@ -51,15 +51,16 @@ export class Model {
   /**
    * Constructs the wallet handler and sets up the initial UI state.
    */
-  constructor() {
+  constructor(wagmiConfig) {
     console.trace('Constructing the model');
+    assert.isObject(wagmiConfig, 'wagmiConfig');
 
     // Validate configuration data
     if (!assert.isNotEmpty(APP_ID)) throw new AppError('You must configure APP_ID within config.js', {code: 'configuration-error'});
     if (!assert.isNotEmpty(APP_NAME)) throw new AppError('You must configure APP_NAME within config.js', {code: 'configuration-error'});
 
     // Construct the wallet and listen for changes to the selected account
-    this.wallet = new Wallet(APP_NAME);
+    this.wallet = new Wallet(APP_NAME, wagmiConfig);
     this.wallet.on('account-changed', this._accountChanged.bind(this));
 
     // Register UI state data
