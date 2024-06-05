@@ -20,7 +20,6 @@ function App() {
 
   const loggedIn = appState === 'initialised' && sessionState === 'logged-in';
 
-  console.debug('App state:', appState, 'Session state:', sessionState, 'Logged in:', loggedIn)
   return (
     <>
       {!loggedIn && <Home />}
