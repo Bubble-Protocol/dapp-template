@@ -6,10 +6,9 @@ This template dApp can be used as a starting point for decentralised application
 
 ## Getting Started
 
-1. Clone this repo and install dependencies:
+1. Clone this repo then install dependencies:
 
 ```
-git clone git@github.com:Bubble-Protocol/dapp-template.git
 npm install
 ```
 
