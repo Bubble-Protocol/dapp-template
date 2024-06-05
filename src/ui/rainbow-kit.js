@@ -10,8 +10,7 @@ import { APP_NAME, SUPPORTED_BLOCKCHAINS } from '../config';
 import {
   metaMaskWallet,
   walletConnectWallet,
-  coinbaseWallet,
-  rainbowWallet
+  coinbaseWallet
 } from '@rainbow-me/rainbowkit/wallets';
 
 
@@ -21,8 +20,7 @@ import {
 
 const wallets = [
   metaMaskWallet,
-  coinbaseWallet,
-  rainbowWallet
+  coinbaseWallet
 ];
 
 if (process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID) {
