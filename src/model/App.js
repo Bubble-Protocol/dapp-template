@@ -51,17 +51,12 @@ export class Model {
   /**
    * Constructs the wallet handler and sets up the initial UI state.
    */
-  constructor(wagmiConfig) {
+  constructor() {
     console.trace('Constructing the model');
-    assert.isObject(wagmiConfig, 'wagmiConfig');
 
     // Validate configuration data
     if (!assert.isNotEmpty(APP_ID)) throw new AppError('You must configure APP_ID within config.js', {code: 'configuration-error'});
     if (!assert.isNotEmpty(APP_NAME)) throw new AppError('You must configure APP_NAME within config.js', {code: 'configuration-error'});
-
-    // Construct the wallet and listen for changes to the selected account
-    this.wallet = new Wallet(APP_NAME, wagmiConfig);
-    this.wallet.on('account-changed', this._accountChanged.bind(this));
 
     // Register UI state data
     stateManager.register('state', this.state);
@@ -78,6 +73,16 @@ export class Model {
     console.trace('Model constructed');
   }
 
+  async initialise(wagmiConfig) {
+    if (this.state !== STATES.closed) throw new AppError('Model already initialised', {code: 'internal-error'});
+    assert.isObject(wagmiConfig, 'wagmiConfig');
+    this._setState(STATES.initialising);
+    this.wallet = new Wallet(APP_NAME, wagmiConfig);
+    this.wallet.on('account-changed', this._accountChanged.bind(this));
+    this.wallet.initialise();
+    this._setState(STATES.initialised);
+  }
+
   /**
    * Logs in to the connected session. Rejects if wallet is not connected.
    */
@@ -86,6 +91,7 @@ export class Model {
     return this.session.login(...args)
     .then(() => {
       stateManager.dispatch('session', this.session.getSessionData());
+      stateManager.dispatch('session-state', this.session.state);
     })
   }
 
@@ -94,8 +100,10 @@ export class Model {
    */
   async logout() {
     if (!this.session) return Promise.reject('Connect wallet before logging out');
-    return this.session.logout();
-  }
+    await this.session.logout();
+    stateManager.dispatch('session', this.session.getSessionData());
+    stateManager.dispatch('session-state', this.session.state);
+}
 
   /**
    * Shuts down the app.
@@ -112,6 +120,7 @@ export class Model {
     this._closeSession();
     if (account) {
       this._openSession();
+      this._setState(STATES.initialised);
     }
     else this._setState(STATES.closed);
   }
@@ -129,11 +138,10 @@ export class Model {
    * Session is initialised.
    */
   async _initialiseSession() {
-    this._setState(STATES.initialising);
     return this.session.initialise()
       .then(sessionData => {
         stateManager.dispatch('session', sessionData);
-        this._setState(STATES.initialised);
+        stateManager.dispatch('session-state', sessionData.state);
       })
       .catch(error => {
         console.warn(error);
@@ -149,9 +157,9 @@ export class Model {
     if (this.session) {
       stateManager.dispatch('error');
       this.session.close();
-      this.session = undefined;
+      this.session = undefined;      
       stateManager.dispatch('session-state', 'closed');
-      stateManager.dispatch('session', {});
+      stateManager.dispatch('session');
     }
   }
 

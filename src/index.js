@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ConnectButton, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 import { QueryClientProvider, QueryClient} from "@tanstack/react-query";
@@ -23,7 +23,7 @@ console.debug = DEBUG_ON ? Function.prototype.bind.call(console.info, console, "
 /**
  * Construct the model
  */
-const model = new Model(wagmiConfig);
+const model = new Model();
 
 window.addEventListener('beforeunload', () => {
   model.close();
@@ -34,9 +34,14 @@ const queryClient = new QueryClient();
 /**
  * Render the UI
  */
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
+
+const App = () => {
+
+  useEffect(() => {
+    model.initialise(wagmiConfig);
+  }, []);
+
+  return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={lightTheme({borderRadius: 'small'})} >
@@ -48,5 +53,11 @@ root.render(
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
-  </React.StrictMode>
+  );
+};
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <App />
 );

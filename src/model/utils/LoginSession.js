@@ -5,7 +5,6 @@
 import * as assert from './assertions';
 import { ecdsa } from '@bubble-protocol/crypto';
 import { Key } from '@bubble-protocol/crypto/src/ecdsa';
-import { stateManager } from '../../state-manager';
 
 /**
  * Application state enum. @See the `state` property below.
@@ -87,6 +86,7 @@ export class LoginSession {
    */
   getSessionData() {
     return {
+      state: this.state,
       account: this.account,
       chainId: this.chainId,
       login: {
@@ -189,7 +189,6 @@ export class LoginSession {
     this.state = this.loginKey ? STATES.loggedIn : STATES.open;
     if (this.state !== oldState) {
       console.trace("session state:", this.state);
-      stateManager.dispatch('session-state', this.state);
     }
   }
 

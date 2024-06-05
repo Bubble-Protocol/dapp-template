@@ -24,9 +24,13 @@ export class Wallet {
   constructor(appName, config) {
     this.appName = appName;
     this.config = config;
-    this.closeWatchers.push(watchAccount(config, {onChange: this._handleAccountsChanged.bind(this)}));
     this.on = this.listeners.on.bind(this.listeners);
     this.off = this.listeners.off.bind(this.listeners);
+  }
+
+  initialise() {
+    const unwatch = watchAccount(this.config, {onChange: this._handleAccountsChanged.bind(this)});
+    this.closeWatchers.push(unwatch);
   }
 
   async isAvailable() {
@@ -176,18 +180,27 @@ export class Wallet {
 
   _handleAccountsChanged(acc) {
     if (acc && acc.address) {
-      this.account = acc.address;
-      this.connector = acc.connector;
-      console.trace('wallet connected with account', this.account);
-      this.state = WALLET_STATE.connected;
+      if (this.state !== WALLET_STATE.connected) {
+        console.trace('wallet connected');
+        this.state = WALLET_STATE.connected;
+      }
+      if (this.connector !== acc.connector) {
+        this.connector = acc.connector;
+        console.trace('wallet connector updated');
+      }
+      if (this.account !== acc.address) {
+        this.account = acc.address;
+        console.trace('wallet account changed to', this.account);
+        this.listeners.notifyListeners('account-changed', this.account, this);
+      }
     }
     else {
       this.account = undefined;
       this.connector = undefined;
       console.trace('wallet disconnected');
       this.state = WALLET_STATE.disconnected;
+      this.listeners.notifyListeners('account-changed', this.account);
     }
-    this.listeners.notifyListeners('account-changed', this.account);
   }
 
   async _waitForConfirmation(hash, options={}) {
