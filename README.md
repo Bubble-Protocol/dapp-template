@@ -60,7 +60,7 @@ There are three files that must be configured:
 
 `src/config.js` contains app-specific public configuration data, such as the app name and supported blockchains.
 
-`.env.example` contains your secret API keys and must be copied to `.env.local`.
+`.env.example` (optional) copy to `.env.local` and add your WalletConnect API key to support remote wallet connectivity.
 
 See each file for details.
 

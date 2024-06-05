@@ -22,9 +22,12 @@ import {
 const wallets = [
   metaMaskWallet,
   coinbaseWallet,
-  rainbowWallet,
-  walletConnectWallet
+  rainbowWallet
 ];
+
+if (process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID) {
+  wallets.push(walletConnectWallet);
+}
 
 const connectors = connectorsForWallets(
   [
