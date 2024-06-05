@@ -4,7 +4,7 @@
 
 import '@rainbow-me/rainbowkit/styles.css';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
-import { createConfig } from 'wagmi';
+import { createConfig, http } from 'wagmi';
 import { APP_NAME, SUPPORTED_BLOCKCHAINS } from '../config';
 
 import {
@@ -40,7 +40,10 @@ const connectors = connectorsForWallets(
   }
 );
 
+const transports = SUPPORTED_BLOCKCHAINS.reduce((obj, chain) => { obj[chain.id] = http(chain.rpcUrls.default.http); return obj }, {});
+
 export const wagmiConfig = createConfig({
+  chains: SUPPORTED_BLOCKCHAINS,
   connectors,
-  chains: SUPPORTED_BLOCKCHAINS
+  transports
 });
