@@ -175,7 +175,6 @@ export class Wallet {
   }
 
   _handleAccountsChanged(acc) {
-    console.debug('account changed:', acc )
     if (acc && acc.address) {
       this.account = acc.address;
       this.connector = acc.connector;
